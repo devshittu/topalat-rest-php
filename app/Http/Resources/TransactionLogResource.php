@@ -21,16 +21,18 @@ class TransactionLogResource extends JsonResource
     public function toArray($request)
     {
 
+//        return parent::toArray($request);
         return [
             'id' => $this->id,
-            'customer_email' => $this->customer_email,
+            'email' => $this->email,
             'reference' => $this->reference,
             'description' => $this->description,
             'service_category_raw' => $this->service_category_raw,
             'service_provider_raw' => $this->service_provider_raw,
             'payment_status' => $this->payment_status,
             'service_render_status' => $this->service_render_status,
-            'service_request_payload_data' => $this->service_request_payload_data,
+            'service_request_payload_data' => json_decode($this->service_request_payload_data),
+            'updated_at' => Carbon::parse($this->updated_at)->timestamp,
             'created_at' => Carbon::parse($this->created_at)->timestamp,
         ];
     }

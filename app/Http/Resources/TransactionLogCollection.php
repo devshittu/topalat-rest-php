@@ -14,6 +14,7 @@ class TransactionLogCollection extends ResourceCollection
      */
     public function toArray($request)
     {
+        var_dump($this->collection);
         return [
             'data' => $this->collection,
         ];

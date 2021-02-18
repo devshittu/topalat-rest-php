@@ -5,10 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
 
 class PassportAuthController extends Controller
 {
+    public $objLabel;
+
+    function __construct()
+    {
+        $this->objLabel = 'User';
+    }
+
     /**
      * Registration
      */
@@ -52,6 +60,48 @@ class PassportAuthController extends Controller
             return response()->json(['error' => 'Unauthorised'], 401);
         }
     }
+
+    /**
+     * updateUser
+     */
+    public function updateUser(Request $request, $userId)
+    {
+        $derivedUserId = (($userId === 'me') || ((int)$userId === Auth::id())) ? Auth::id() : (int)$userId;
+
+        $this->validate($request, [
+            'username' => 'min:4',
+            'full_name' => 'min:4',
+            'email' => 'email',
+            'is_active' => 'boolean',
+            'is_staff' => 'boolean',
+            'is_superuser' => 'boolean',
+        ]);
+        try {
+            $obj = User::whereId($derivedUserId)->firstOrFail();
+        } catch (ModelNotFoundException $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => "{$this->objLabel} not found"
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$obj) {
+            return response()->json([
+                'success' => false,
+                'message' => "{$this->objLabel} not found"
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($obj->update($request->all())) {
+            return new \App\Http\Resources\UserResource($obj);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => '{$this->objLabel} can not be updated'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     /**
      * Log the user out (Invalidate the token).

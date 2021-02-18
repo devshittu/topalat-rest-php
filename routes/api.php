@@ -19,10 +19,11 @@ use \Symfony\Component\HttpFoundation\Response;
 Route::prefix('auth')->group(function () {
     Route::post('/register', [PassportAuthController::class, 'register']);
     Route::post('/login', [PassportAuthController::class, 'login']);
-    Route::middleware('auth:api')->delete('/logout', [PassportAuthController::class, 'logout'] );
+    Route::middleware('auth:api')->delete('/logout', [PassportAuthController::class, 'logout']);
+    Route::middleware('auth:api')->patch('/users/{id}', [PassportAuthController::class, 'updateUser']);
     Route::middleware('auth:api')->get('/me', function (Request $request) {
         if (\Illuminate\Support\Facades\Auth::check()) {
-            return new \App\Http\Resources\UserResource($request->user());
+            return response()->json(['user' => new \App\Http\Resources\UserResource($request->user())], Response::HTTP_OK);
         } else {
             return response()->json([
                 'success' => false,
@@ -30,16 +31,23 @@ Route::prefix('auth')->group(function () {
             ], Response::HTTP_UNAUTHORIZED);
         }
     });
+//    Route::middleware('auth:api')->patch('/me', [PassportAuthController::class, 'updateMe']);
+    Route::get('/users', function (Request $request) {
+        return \App\Http\Resources\UserResource::collection(\App\Models\User::all());
+    });
 });
 
-Route::get('/users', function (Request $request) {
-    return \App\Models\User::all();
-});
 
 
-Route::post('/services/transactionlogs/', [\App\Http\Controllers\TransactionLogController::class, 'store'])->name('createTransactionlog');
-Route::patch('/services/transactionlogs/{reference}/', [\App\Http\Controllers\TransactionLogController::class, 'update'])->name('updateTransactionlog');
-Route::delete('/services/transactionlogs/{reference}/', [\App\Http\Controllers\TransactionLogController::class, 'destroy'])->name('deleteTransactionlog');
+Route::post('/services/transactionlogs/', [\App\Http\Controllers\TransactionLogController::class, 'store'])->name('createTransactionlog')
+//    ->middleware('auth.basic.once')
+;
+Route::patch('/services/transactionlogs/{reference}/', [\App\Http\Controllers\TransactionLogController::class, 'update'])->name('updateTransactionlog')
+//    ->middleware('auth.basic.once')
+;
+Route::delete('/services/transactionlogs/{reference}/', [\App\Http\Controllers\TransactionLogController::class, 'destroy'])->name('deleteTransactionlog')
+//    ->middleware('auth.basic.once')
+;
 
 
 Route::get('/services/transactionlogs/', function (Request $request) {
@@ -47,7 +55,7 @@ Route::get('/services/transactionlogs/', function (Request $request) {
 })->name('allTransactionlogs');
 //\Illuminate\Support\Facades\Config::get('constants.pagination.per_page')
 Route::get('/services/transactionlogs/categories/{category}', function ($category) {
-    $logs = \App\Models\TransactionLog::where('service_category_raw', $category)->paginate(15);;
+    $logs = \App\Models\TransactionLog::where('service_category_raw', $category)->paginate(15);
     return \App\Http\Resources\TransactionLogResource::collection($logs);
 
 })->name('transactionlogsByCategories');

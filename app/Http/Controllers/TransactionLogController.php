@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TransactionLog;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -52,7 +53,7 @@ class TransactionLogController extends Controller
         } else {
             return response()->json([
                 'success' => false,
-                'message' => '{$this->objLabel} can not be sent'
+                'message' => "{$this->objLabel} can not be sent"
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -82,12 +83,21 @@ class TransactionLogController extends Controller
         ]);
 //        TransactionLog::whereReference($id)->firstOrFail()->update($request->all());
 //        $res = TransactionLog::whereReference($id)->firstOrFail();
-        $obj = TransactionLog::whereReference($id)->firstOrFail();
+//        $obj = TransactionLog::whereReference($id)->firstOrFail();
+
+        try {
+            $obj = TransactionLog::whereReference($id)->firstOrFail();
+        } catch (ModelNotFoundException $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => "{$this->objLabel} not found"
+            ], Response::HTTP_NOT_FOUND);
+        }
 
         if (!$obj) {
             return response()->json([
                 'success' => false,
-                'message' => '{$this->objLabel} not found'
+                'message' => "{$this->objLabel} not found"
             ], Response::HTTP_NOT_FOUND);
         }
 
@@ -111,12 +121,20 @@ class TransactionLogController extends Controller
     public function destroy($id)
     {
 //        TransactionLog::whereReference($id)->firstOrFail()->delete();
-        $obj = TransactionLog::whereReference($id)->firstOrFail();
+
+        try {
+            $obj = TransactionLog::whereReference($id)->firstOrFail();
+        } catch (ModelNotFoundException $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => "{$this->objLabel} not found"
+            ], Response::HTTP_NOT_FOUND);
+        }
 
         if (!$obj) {
             return response()->json([
                 'success' => false,
-                'message' => '{$this->objLabel} not found'
+                'message' => "{$this->objLabel} not found"
             ], Response::HTTP_NOT_FOUND);
         }
 

@@ -18,6 +18,6 @@ class TransactionLog extends BaseModel
         'service_request_payload_data' => 'array',
     ];
     private $username;
-//    protected $fillable = [‘customer_email’, ‘reference’, ‘description’, ‘’, ‘’, ‘’, ‘’];
-    protected $guarded = ['payment_status', 'service_render_status', 'service_request_payload_data'];
+//    protected $fillable = [‘email’, ‘reference’, ‘description’, 'payment_status', 'service_render_status', ];
+    protected $guarded = ['service_request_payload_data'];
 }

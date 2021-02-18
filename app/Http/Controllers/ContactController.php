@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ContactUsMail;
 use App\Mail\TestMail;
 use App\Models\Contact;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,7 +59,7 @@ class ContactController extends Controller
         } else {
             return response()->json([
                 'success' => false,
-                'message' => '{$this->objLabel} can not be sent'
+                'message' => "{$this->objLabel} can not be sent"
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -85,12 +86,20 @@ class ContactController extends Controller
 
 //        Contact::whereId($id)->firstOrFail()->update($request->all());
 //        $res = Contact::whereId($id)->firstOrFail();
-        $obj = Contact::whereId($id)->firstOrFail();
+
+        try {
+            $obj = Contact::whereId($id)->firstOrFail();
+        } catch (ModelNotFoundException $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => "{$this->objLabel} not found"
+            ], Response::HTTP_NOT_FOUND);
+        }
 
         if (!$obj) {
             return response()->json([
                 'success' => false,
-                'message' => '{$this->objLabel} not found'
+                'message' => "{$this->objLabel} not found"
             ], Response::HTTP_NOT_FOUND);
         }
 
@@ -119,7 +128,7 @@ class ContactController extends Controller
         if (!$obj) {
             return response()->json([
                 'success' => false,
-                'message' => '{$this->objLabel} not found'
+                'message' => "{$this->objLabel} not found"
             ], Response::HTTP_NOT_FOUND);
         }
 
