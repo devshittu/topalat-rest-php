@@ -31,7 +31,7 @@ Route::prefix('auth')->group(function () {
             ], Response::HTTP_UNAUTHORIZED);
         }
     });
-//    Route::middleware('auth:api')->patch('/me', [PassportAuthController::class, 'updateMe']);
+    Route::middleware('auth:api')->patch('/me', [PassportAuthController::class, 'updateMe']);
     Route::get('/users', function (Request $request) {
         return \App\Http\Resources\UserResource::collection(\App\Models\User::all());
     });
@@ -52,6 +52,26 @@ Route::delete('/services/transactionlogs/{reference}/', [\App\Http\Controllers\T
 
 Route::get('/services/transactionlogs/', function (Request $request) {
     return \App\Http\Resources\TransactionLogResource::collection(\App\Models\TransactionLog::all());
+})->name('allTransactionlogs');
+Route::get('/services/transactionlogs/search/', function (Request $request) {
+    $q = $request->get('q');
+    // Variable to check
+//    $ifEmail = "john.doe@example.com";
+
+// Remove all illegal characters from email
+    $ifEmail = filter_var($q, FILTER_SANITIZE_EMAIL);
+
+// Validate e-mail
+    if (filter_var($ifEmail, FILTER_VALIDATE_EMAIL)) {
+//        echo("$ifEmail is a valid email address");
+        $search = \App\Models\TransactionLog::where('email', 'LIKE', "%$q%")->get();
+    } else {
+//        echo("$ifEmail is not a valid email address");
+        $search = \App\Models\TransactionLog::where('reference', 'LIKE', "%$q%")->get();
+    }
+//    $result = \App\Models\TransactionLog::all();
+    $result = $search;
+    return \App\Http\Resources\TransactionLogResource::collection($result);
 })->name('allTransactionlogs');
 //\Illuminate\Support\Facades\Config::get('constants.pagination.per_page')
 Route::get('/services/transactionlogs/categories/{category}', function ($category) {

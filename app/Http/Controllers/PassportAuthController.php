@@ -62,6 +62,47 @@ class PassportAuthController extends Controller
     }
 
     /**
+     * updateMe
+     */
+    public function updateMe(Request $request)
+    {
+//        $derivedUserId = (($userId === 'me') || ((int)$userId === Auth::id())) ? Auth::id() : (int)$userId;
+
+        $this->validate($request, [
+            'username' => 'min:4',
+            'full_name' => 'min:4',
+            'email' => 'email',
+            'is_active' => 'boolean',
+            'is_staff' => 'boolean',
+            'is_superuser' => 'boolean',
+        ]);
+        try {
+            $obj = User::whereId(Auth::id())->firstOrFail();
+        } catch (ModelNotFoundException $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => "{$this->objLabel} not found"
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$obj) {
+            return response()->json([
+                'success' => false,
+                'message' => "{$this->objLabel} not found"
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($obj->update($request->all())) {
+            return new \App\Http\Resources\UserResource($obj);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => '{$this->objLabel} can not be updated'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
      * updateUser
      */
     public function updateUser(Request $request, $userId)
