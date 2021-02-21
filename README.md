@@ -17,6 +17,6 @@ Run your migrations as:
 
 All in one line
 
-
+> tangsail  artisan clear-compiled && tangsail  artisan optimize:clear && tangsail composer dump-autoload 
 
 

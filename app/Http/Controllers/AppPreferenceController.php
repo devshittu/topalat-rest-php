@@ -65,12 +65,12 @@ class AppPreferenceController extends Controller
     public function update(Request $request, $id)
     {
 
-//        $this->validate($request, [
-//            'full_name' => 'min:4|string',
-//            'email' => 'email',
-//            'subject' => 'string',
-//            'message' => 'string',
-//        ]);
+//        $request->settings = json_encode($request->settings);
+        $this->validate($request, [
+            'settings' => 'required|json',
+        ]);
+//        var_dump($request->settings);
+
 
         try {
             $obj = AppPreference::whereProfileKey($id)->firstOrFail();
@@ -88,6 +88,7 @@ class AppPreferenceController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
+        //        $findObj->settings = $request->settings;
         if ($obj->update($request->all())) {
             return new \App\Http\Resources\AppPreferenceResource($obj);
         } else {

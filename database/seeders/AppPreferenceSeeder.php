@@ -27,7 +27,11 @@ class AppPreferenceSeeder extends Seeder
                             'cabletv' => true,
                             'power' => true,
                         ],
-                        'announcement' => false
+                        'announcement' => [
+                            'show' => true,
+                            'type' => 'is-danger',
+                            'message' => 'This is a note for all users to see. I hope it catches <b>attention</b>',
+                        ],
                     ]),
                     'updated_at' => now()->timestamp,
                     'created_at' => now()->timestamp,
@@ -44,6 +48,7 @@ class AppPreferenceSeeder extends Seeder
                             'power' => true,
                         ],
                         'announcement' => [
+                            'show' => true,
                             'type' => 'is-danger',
                             'message' => 'This is a note for all users to see. I hope it catches <b>attention</b>',
                         ],

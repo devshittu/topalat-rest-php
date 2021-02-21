@@ -3,7 +3,7 @@
 use App\Http\Controllers\PassportAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use \Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +40,7 @@ Route::prefix('auth')->group(function () {
 
 Route::prefix('/apppref')->group(function () {
     Route::get('/', [\App\Http\Controllers\AppPreferenceController::class, 'index'])->name('getAppPref');
-    Route::patch('/{key}', [\App\Http\Controllers\AppPreferenceController::class, 'update'])->name('updateAppPref');
+    Route::patch('/{key}/', [\App\Http\Controllers\AppPreferenceController::class, 'update'])->name('updateAppPref');
     Route::get('/{key}', [\App\Http\Controllers\AppPreferenceController::class, 'show'])->name('showAppPref');
 
 })//    ->middleware('auth.basic.once')
