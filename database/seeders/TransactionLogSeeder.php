@@ -17,7 +17,7 @@ class TransactionLogSeeder extends Seeder
     {
 
         DB::table('transaction_logs')->insert([
-        'email' => Str::random(10).'@gmail.com',
+            'email' => Str::random(10) . '@gmail.com',
             'reference' => Str::random(10),
             'description' => Str::random(100),
             'service_category_raw' => Str::random(10),
@@ -25,6 +25,6 @@ class TransactionLogSeeder extends Seeder
             'payment_status' => 2,
             'service_render_status' => 1,
             'service_request_payload_data' => '{ "name": "John Doe"}',
-            ]);
+        ]);
     }
 }

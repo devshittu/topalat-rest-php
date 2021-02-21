@@ -38,15 +38,18 @@ Route::prefix('auth')->group(function () {
 });
 
 
+Route::prefix('/apppref')->group(function () {
+    Route::get('/', [\App\Http\Controllers\AppPreferenceController::class, 'index'])->name('getAppPref');
+    Route::patch('/{key}', [\App\Http\Controllers\AppPreferenceController::class, 'update'])->name('updateAppPref');
+    Route::get('/{key}', [\App\Http\Controllers\AppPreferenceController::class, 'show'])->name('showAppPref');
 
-Route::post('/services/transactionlogs/', [\App\Http\Controllers\TransactionLogController::class, 'store'])->name('createTransactionlog')
-//    ->middleware('auth.basic.once')
+})//    ->middleware('auth.basic.once')
 ;
-Route::patch('/services/transactionlogs/{reference}/', [\App\Http\Controllers\TransactionLogController::class, 'update'])->name('updateTransactionlog')
-//    ->middleware('auth.basic.once')
+Route::post('/services/transactionlogs/', [\App\Http\Controllers\TransactionLogController::class, 'store'])->name('createTransactionlog')//    ->middleware('auth.basic.once')
 ;
-Route::delete('/services/transactionlogs/{reference}/', [\App\Http\Controllers\TransactionLogController::class, 'destroy'])->name('deleteTransactionlog')
-//    ->middleware('auth.basic.once')
+Route::patch('/services/transactionlogs/{reference}/', [\App\Http\Controllers\TransactionLogController::class, 'update'])->name('updateTransactionlog')//    ->middleware('auth.basic.once')
+;
+Route::delete('/services/transactionlogs/{reference}/', [\App\Http\Controllers\TransactionLogController::class, 'destroy'])->name('deleteTransactionlog')//    ->middleware('auth.basic.once')
 ;
 
 
@@ -72,7 +75,7 @@ Route::get('/services/transactionlogs/search/', function (Request $request) {
 //    $result = \App\Models\TransactionLog::all();
     $result = $search;
     return \App\Http\Resources\TransactionLogResource::collection($result);
-})->name('allTransactionlogs');
+})->name('searchTransactionlogs');
 //\Illuminate\Support\Facades\Config::get('constants.pagination.per_page')
 Route::get('/services/transactionlogs/categories/{category}', function ($category) {
     $logs = \App\Models\TransactionLog::where('service_category_raw', $category)->paginate(15);
