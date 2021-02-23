@@ -52,7 +52,8 @@ class ContactController extends Controller
                 'full_name' => $request->full_name,
 
             ];
-            Mail::to('devshittu@gmail.com')->send(new ContactUsMail($details));
+            $toEmail = env('MAIL_CONTACT_ADDRESS', "contact@topalat.ng");
+            Mail::to($toEmail)->send(new ContactUsMail($details));
 
             return new \App\Http\Resources\ContactResource($newResObj);
 

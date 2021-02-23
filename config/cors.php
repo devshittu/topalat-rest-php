@@ -19,9 +19,9 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['http://127.0.0.1:*', 'http://localhost:*', 'http://*.topalat.ng', 'https://*.topalat.ng'],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => ['Google'],
 
     'allowed_headers' => ['*'],
 
