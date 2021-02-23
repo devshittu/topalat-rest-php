@@ -29,8 +29,9 @@ class AppPreferenceSeeder extends Seeder
                         ],
                         'announcement' => [
                             'show' => true,
-                            'type' => 'is-danger',
-                            'message' => 'This is a note for all users to see. I hope it catches <b>attention</b>',
+                            'type' => 'is-info',
+                            'size' => 'is-medium',
+                            'message' => 'Please note that this site is still in <b>test mode</b>, kindly pay attention to this space for information on when we are going live',
                         ],
                     ]),
                     'updated_at' => now()->timestamp,
@@ -50,7 +51,8 @@ class AppPreferenceSeeder extends Seeder
                         'announcement' => [
                             'show' => true,
                             'type' => 'is-danger',
-                            'message' => 'This is a note for all users to see. I hope it catches <b>attention</b>',
+                            'size' => 'is-medium',
+                            'message' => 'Please note that this site is still in <b>test mode</b>, kindly pay attention to this space for information on when we are going live',
                         ],
                     ]),
                     'updated_at' => now()->timestamp,

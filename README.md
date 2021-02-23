@@ -12,6 +12,7 @@ Run your migrations as:
 > tangsail artisan migrate:refresh --seed \
 > tangsail artisan migrate:reset \
 > tangsail artisan passport:install \
+> tangsail artisan config:cache
 > 
 > tangsail artisan migrate:refresh --seed && tangsail artisan passport:install
 
