@@ -166,4 +166,16 @@ class PassportAuthController extends Controller
         }
         return response()->json(['message' => 'User successfully signed out']);
     }
+
+    /**
+     * updateUser
+     */
+    public function authHMAC(Request $request)
+    {
+        $request_type = $request->method();
+        $request_endpoint = $request->path();
+        $request_payload = $request->all();
+        dd(collect($request)->toJson());
+//        return make_hmac_digest($request, );
+    }
 }

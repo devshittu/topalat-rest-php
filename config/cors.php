@@ -20,7 +20,8 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-        '*', 'http://127.0.0.1:*',
+        '*',
+        'http://127.0.0.1:*',
         'http://localhost:*', 'http://*.topalat.ng',
         'https://*.topalat.ng'
     ],

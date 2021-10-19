@@ -4,6 +4,7 @@ use App\Http\Controllers\PassportAuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +54,7 @@ Route::delete('/services/transactionlogs/{reference}/', [\App\Http\Controllers\T
 ;
 
 
+
 Route::get('/services/transactionlogs/', function (Request $request) {
     return \App\Http\Resources\TransactionLogResource::collection(\App\Models\TransactionLog::all());
 })->name('allTransactionlogs');
@@ -78,7 +80,11 @@ Route::get('/services/transactionlogs/search/', function (Request $request) {
 })->name('searchTransactionlogs');
 //\Illuminate\Support\Facades\Config::get('constants.pagination.per_page')
 Route::get('/services/transactionlogs/categories/{category}', function ($category) {
-    $logs = \App\Models\TransactionLog::where('service_category_raw', $category)->paginate(15);
+//    $logs = \App\Models\TransactionLog::where('service_category_raw', $category);
+////    if orderby is passed then use it
+//    $logs->orderBy('created_at', 'DESC');
+//    $logs->paginate(15);
+    $logs = \App\Models\TransactionLog::where('service_category_raw', $category)->latest()->paginate(15);
     return \App\Http\Resources\TransactionLogResource::collection($logs);
 
 })->name('transactionlogsByCategories');
@@ -105,3 +111,30 @@ Route::get('/contacts/{id}', function ($id) {
     $log = \App\Models\Contact::whereId($id)->firstOrFail();
     return new \App\Http\Resources\ContactResource($log);
 })->name('aContact');
+
+
+//Route::prefix('/orders')->group(function () {
+//
+//    Route::get('', function ($id) {
+//        return "API Data shows here";
+//    });
+//
+//    Route::get('/{id}', function ($id) {
+//        return "API Data shows here" . $id;
+//    });
+//
+//
+//});
+
+//Route::get('/buy', [\App\Http\Controllers\OrderController::class, 'index'])//    ->name('buyService')->middleware('auth.basic.once')
+//;
+Route::middleware('auth:api')->post('/buy/airtime', [\App\Http\Controllers\OrderController::class, 'airtime'])//    ->name('buyService')->middleware('auth.basic.once')
+//Route::post('/buy/airtime', [\App\Http\Controllers\OrderController::class, 'airtime'])//    ->name('buyService')->middleware('auth.basic.once')
+;
+Route::middleware('auth:api')->post('/buy/databundle', [\App\Http\Controllers\OrderController::class, 'databundle']);//    ->name('buyService')->middleware('auth.basic.once')
+Route::middleware('auth:api')->post('/buy/cabletv', [\App\Http\Controllers\OrderController::class, 'cabletv']);//    ->name('buyService')->middleware('auth.basic.once')
+Route::middleware('auth:api')->post('/buy/electricity', [\App\Http\Controllers\OrderController::class, 'electricity']);//    ->name('buyService')->middleware('auth.basic.once')
+Route::middleware('auth:api')->post('/services/electricity/verify_account/', [\App\Http\Controllers\OrderController::class, 'verifyAccount']);//    ->name('buyService')->middleware('auth.basic.once')
+Route::get('/balance', [\App\Http\Controllers\OrderController::class, 'balance'])
+    ->name('checkBalance')->middleware(['auth:api', 'order_auth'])
+;

@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\TransactionLog;
+use App\Traits\OrderLoggerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Symfony\Component\HttpFoundation\Response;
 
 class TransactionLogController extends Controller
 {
+    use OrderLoggerTrait;
 
-    public $objLabel;
+//    private $objLabel;
 
     function __construct() {
         $this->objLabel = 'Transaction';
@@ -25,31 +28,33 @@ class TransactionLogController extends Controller
     {
         //
 
-//        $this->validate()
+
+//        dd($request->all());
 
         $this->validate($request, [
             'email' => 'required|email',
-            'reference' => 'required|min:12|unique:App\Models\TransactionLog,reference',
+//            'reference' => 'required|min:12|unique:App\Models\TransactionLog,reference',
             'description' => 'min:4',
             'service_request_payload_data' => 'required|json',
         ]);
+        // TODO
+        $reference  = $this->agentReference($request->service_category_raw);
 
         $newResObj = new TransactionLog();
 
         $newResObj->email = $request->email;
-        $newResObj->reference = $request->reference;
+        $newResObj->reference = $reference;
         $newResObj->description = $request->description;
         $newResObj->service_category_raw = $request->service_category_raw;
         $newResObj->service_provider_raw = $request->service_provider_raw;
-        $newResObj->payment_status = 1;
-        $newResObj->service_render_status = 1;
+        $newResObj->payment_status = Config::get('constants.service_status.PENDING');
+        $newResObj->service_render_status = Config::get('constants.service_status.PENDING');
         $newResObj->service_request_payload_data = $request->service_request_payload_data;
 
 //        $newResObj->save();
 
         if ($newResObj->save()) {
             //send a mail from here;
-
         } else {
             return response()->json([
                 'success' => false,

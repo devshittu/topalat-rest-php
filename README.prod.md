@@ -3,7 +3,7 @@ Backend flow check list
 cd /var/www/api.topalat.ng/
 git clone git@github.com:devshittu/topalat-rest-php.git
 
-rm -rf html
+sudo rm -rf html
 
 mv topalat-rest-php html && cd html
 
@@ -47,19 +47,7 @@ MAIL_PASSWORD=12345678Aa
 MAIL_ENCRYPTION=ssl
 MAIL_FROM_ADDRESS=admin@topalat.ng
 MAIL_FROM_NAME="${APP_NAME}"
-
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_DEFAULT_REGION=us-east-1
-AWS_BUCKET=
-
-PUSHER_APP_ID=
-PUSHER_APP_KEY=
-PUSHER_APP_SECRET=
-PUSHER_APP_CLUSTER=mt1
-
-MIX_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
-MIX_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+MAIL_CONTACT_ADDRESS=contact@topalat.ng
 
 
 install composer
@@ -72,7 +60,7 @@ Please perform a clean with:
 > php  artisan clear-compiled \
 > php  artisan optimize \
 > sudo php artisan cache:clear \
-> 
+> > php artisan migrate:refresh --seed && php artisan passport:install \
 
 
 
