@@ -56,7 +56,9 @@ Route::delete('/services/transactionlogs/{reference}/', [\App\Http\Controllers\T
 
 
 Route::get('/services/transactionlogs/', function (Request $request) {
-    return \App\Http\Resources\TransactionLogResource::collection(\App\Models\TransactionLog::all());
+    // $logs = \App\Models\TransactionLog::all();
+    $logs = \App\Models\TransactionLog::latest()->get();
+    return \App\Http\Resources\TransactionLogResource::collection($logs);
 })->name('allTransactionlogs');
 Route::get('/services/transactionlogs/search/', function (Request $request) {
     $q = $request->get('q');

@@ -68,6 +68,7 @@ class PassportAuthController extends Controller
     {
 //        $derivedUserId = (($userId === 'me') || ((int)$userId === Auth::id())) ? Auth::id() : (int)$userId;
 
+        // TODO: protect this route as well so that a user might not upgrade their account access.
         $this->validate($request, [
             'username' => 'min:4',
             'full_name' => 'min:4',

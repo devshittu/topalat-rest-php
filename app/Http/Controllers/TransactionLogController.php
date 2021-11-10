@@ -76,6 +76,8 @@ class TransactionLogController extends Controller
     public function update(Request $request, $id)
     {
 
+        // TODO: check it is a client and also the authenticity of the request and ensure it is not from the unknown source that is where the process_hmac_auth()
+
         $this->validate($request, [
             'email' => 'email',
             'reference' => 'min:12',

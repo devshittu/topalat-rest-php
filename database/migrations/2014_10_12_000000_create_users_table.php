@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->boolean('is_active')->default(true);
             $table->boolean('is_staff')->default(true);
             $table->boolean('is_superuser')->default(false);
+            $table->boolean('is_client')->default(false)->nullable();
             $table->rememberToken();
 //            $table->timestamps();
             $table->unsignedInteger('created_at');
