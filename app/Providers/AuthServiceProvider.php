@@ -26,7 +26,19 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
         Passport::routes();
+        Passport::tokensCan([
+            'client' => 'Client for guest access',
+            'admin' => 'Access Admin Backend',
+            'user' => 'Access User Backend',
 
+            'place-orders' => 'Place orders',
+            'check-balance' => 'Check balance status',
+        ]);
+        Passport::setDefaultScope([
+            'admin',
+        ]);
+
+        Passport::cookie('tang_token');
         //
     }
 }

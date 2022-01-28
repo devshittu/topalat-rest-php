@@ -18,25 +18,12 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
                 [
-                    'username' => 'topalatui',
-                    'full_name' => 'Topalat Web Client',
-                    'email' => 'topalatonline@gmail.com',
-                    'is_staff' => true,
-                    'is_superuser' => true,
-                    'is_active' => true,
-                    'is_client' => true,
-                    'password' => Hash::make('12345678'),
-                    'updated_at' => now()->timestamp,
-                    'created_at' => now()->timestamp,
-                ],
-                [
                     'username' => 'devshittu',
                     'full_name' => 'Muhammed Shittu',
                     'email' => 'devshittu@gmail.com',
                     'is_staff' => true,
                     'is_superuser' => true,
                     'is_active' => true,
-                    'is_client' => false,
                     'password' => Hash::make('12345678'),
                     'updated_at' => now()->timestamp,
                     'created_at' => now()->timestamp,
@@ -48,7 +35,6 @@ class UserSeeder extends Seeder
                     'is_staff' => true,
                     'is_superuser' => true,
                     'is_active' => true,
-                    'is_client' => false,
                     'password' => Hash::make('12345678'),
                     'updated_at' => now()->timestamp,
                     'created_at' => now()->timestamp,

@@ -11,6 +11,10 @@ return [
         'test_signature' => env('BAXI_TEST_SIGNATURE', 'ONXpnbbudYgopBvRwPFCn7eZTPY='),
         'agent_id' => env('BAXI_AGENT_ID', '0'),
     ],
+    'app' => [
+        'client_secret' => env('APP_WEB_CLIENT_SECRET', 'APP_WEB_CLIENT_SECRET'),
+    ],
+
     'service_status' => [
         'PENDING' => '0',
         'COMPLETED' => '1',

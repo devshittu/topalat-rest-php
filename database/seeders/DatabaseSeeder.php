@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
 //         \App\Models\Contact::factory(50)->create();
 
         $this->call([
+            ClientSeeder::class,
             UserSeeder::class,
             AppPreferenceSeeder::class,
 //            TransactionLogSeeder::class,

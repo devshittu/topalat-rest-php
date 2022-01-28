@@ -26,6 +26,7 @@ class UserResource extends JsonResource
             'is_active' => (bool) $this->is_active,
             'is_staff' => (bool) $this->is_staff,
             'is_superuser' => (bool) $this->is_superuser,
+//            'is_client' => (bool) $this->is_client,
             'created_at' => Carbon::parse($this->created_at)->timestamp,
             'updated_at' => Carbon::parse($this->updated_at)->timestamp,
         ];

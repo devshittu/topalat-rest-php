@@ -8,6 +8,8 @@ use App\Http\Requests\VerifyPowerAccountRequest;
 use App\Models\TransactionLog;
 use App\Traits\OrderLoggerTrait;
 use Carbon\Carbon;
+use DateTime;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use \Illuminate\Support\Facades\Config;
 
 // Added this line
@@ -24,10 +26,6 @@ class OrderController extends Controller
     private $refPrefixCabletv = 'CT';
     private $refPrefixElectricity = 'EL';
 
-    public function index()
-    {
-        return Http::get("reqres.in/api/users?page=1");
-    }
 
     /**
      * Fetch account's total balance.
@@ -38,7 +36,14 @@ class OrderController extends Controller
     public function balance(Request $request)
     {
 
-        $this->middleware('order_auth');
+//        $this->middleware('order_auth');
+        $getCurrentTimeRFC = date(DateTime::RFC2822);
+//        $getCurrentTimeRFC = "Thu, 27 Jan 2022 14:21:25 +0100";
+        $getCurrentTimeRFC = "Fri, 28 Jan 2022 00:37:09 +0100";
+        var_dump($getCurrentTimeRFC);
+        $toutc = strtotime($getCurrentTimeRFC);
+        $reversedDate = date(DATE_RFC2822,$toutc);
+        dd($getCurrentTimeRFC, $toutc, $reversedDate);
         $request_type = "GET";
         $endpoint = "/api/baxipay/superagent/account/balance";
         $json_payload = '';
@@ -107,8 +112,14 @@ class OrderController extends Controller
         $getTransactionLogByRef = $this->findTransactionLogByRef($agentReference);
         if ($getTransactionLogByRef) {
 
-            $transactionObject = TransactionLog::whereReference($agentReference)->firstOrFail();
-
+            try {
+                $transactionObject = TransactionLog::whereReference($agentReference)->firstOrFail();
+            } catch (ModelNotFoundException $ex) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Transaction not found"
+                ], Response::HTTP_NOT_FOUND);
+            }
             // check payment successfully made.
             if(!$transactionObject->payment_status) {
 

@@ -52,12 +52,13 @@ class PassportAuthController extends Controller
             'email' => $request->email,
             'password' => $request->password
         ];
+//        dd('PassportAuthCOntroller:// login()');
 
         if (auth()->attempt($data)) {
-            $token = auth()->user()->createToken('LaravelAuthApp')->accessToken;
+            $token = auth()->user()->createToken('tangAuthApp')->accessToken;
             return response()->json(['token' => $token], 200);
         } else {
-            return response()->json(['error' => 'Unauthorised'], 401);
+            return response()->json(['error' => 'Email or password incorrect'], 401);
         }
     }
 
@@ -166,17 +167,5 @@ class PassportAuthController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return response()->json(['message' => 'User successfully signed out']);
-    }
-
-    /**
-     * updateUser
-     */
-    public function authHMAC(Request $request)
-    {
-        $request_type = $request->method();
-        $request_endpoint = $request->path();
-        $request_payload = $request->all();
-        dd(collect($request)->toJson());
-//        return make_hmac_digest($request, );
     }
 }
