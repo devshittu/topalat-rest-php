@@ -25,13 +25,6 @@ if (!function_exists('make_hmac_auth')) {
     }
 }
 
-//$request_type = "GET";
-//$endpoint = "/api/baxipay/superagent/account/balance";
-//$request_date = "Thu, 19 Dec 2019 17:40:26 GMT";
-//$request_date = date(DATE_RFC1123);
-//$user_secret = "YOUR_USER_SECRET";
-//$json_payload = '{ "name":"tayo" }';
-//$encoded_payload_hash = "";
 
 if (!function_exists('calculate_digest')) {
 
@@ -74,13 +67,12 @@ if (!function_exists('process_hmac_auth')) {
     {
 
         $request_type = $request->method();
-//        var_dump($request_type);
         $endpoint = str_replace("api/",'',$request->path());
 
         $json_payload = collect($request->all())->toJson();
         // 1. CONVERT DATE TO UNIX TIMESTAMP
 //        $request_auth = $request->header('Authorization');
-//        SPLIT IN TO TWO USINg :  and get the second item after username
+//        SPLIT IN TO TWO USING :  and get the second item after username
         $request_date = $request->header('X-DATE-TIME');
         $user_secret = Config::get('constants.app.client_secret'); //'secret'; // Take out to .env variables
         $timestamp = strtotime($request_date);
@@ -94,7 +86,6 @@ if (!function_exists('process_hmac_auth')) {
         } else {
             $encoded_payload_hash = ""; // NO PAYLOAD
         }
-//        dd($encoded_payload_hash);
         $signed_string = $request_type . $endpoint . $timestamp . $encoded_payload_hash;
 
         // 5. DO A UTF-8 ENCODE OF THE SECURITY STRING

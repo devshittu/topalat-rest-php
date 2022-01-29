@@ -33,6 +33,10 @@ class AppPreferenceSeeder extends Seeder
                             'size' => 'is-medium',
                             'message' => 'This site is still in <b>test mode</b>. Found a bug? Great!  <a href="/contact-us">report</a> or <a href="mailto:contact@topalat.ng">mail us</a> 🙏🏾',
                         ],
+                        'social_media_handles' => [
+                            'twitter' => '@topalatng',
+                            'instagram' => 'topalatng',
+                        ],
                     ]),
                     'updated_at' => now()->timestamp,
                     'created_at' => now()->timestamp,
@@ -53,6 +57,10 @@ class AppPreferenceSeeder extends Seeder
                             'type' => 'is-danger',
                             'size' => 'is-medium',
                             'message' => '<b>Test Mode</b>: Found a bug? Great!  <a href="/contact-us">report</a> or <a href="mailto:contact@topalat.ng">mail us</a> 🙏🏾',
+                        ],
+                        'social_media_handles' => [
+                            'twitter' => '@topalatng',
+                            'instagram' => 'topalatng',
                         ],
                     ]),
                     'updated_at' => now()->timestamp,
