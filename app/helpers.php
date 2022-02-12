@@ -97,7 +97,7 @@ if (!function_exists('process_hmac_auth')) {
         // 7. CONVERT HASH SIGNATURE TO BASE 64
         $final_signature = base64_encode($hash_signature);
 
-        return $final_signature;
+        return array($final_signature, $signed_string, $json_payload);
     }
 }
 

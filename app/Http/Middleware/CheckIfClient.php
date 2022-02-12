@@ -22,11 +22,14 @@ class CheckIfClient
     {
 //        return response( array( "process_hmac_auth" => process_hmac_auth($request), "method" =>  $request->method(), "headers" => $request->header(), "data" => $request->all(), "path" => $request->path() ), Response::HTTP_FORBIDDEN);
 //        remaining the process_hmac_client
-        $isAuthorisedClient = (process_hmac_auth($request) === $request->header('X-CLIENT-VERIFY'));
+        list($final_signature, $signed_string, $json_payload) = process_hmac_auth($request);
+//        $isAuthorisedClient = (process_hmac_auth($request) === $request->header('X-CLIENT-VERIFY'));
+        $isAuthorisedClient = $final_signature === $request->header('X-CLIENT-VERIFY');
 
         //This will be excecuted if the new authentication fails.
         if (!$isAuthorisedClient){
-            return response( array( "status" => "failed", "message" => "Client verification error." ), Response::HTTP_FORBIDDEN);
+//            return response( array( "status" => "failed", "message" => "Client verification error.", "json_payload" => $json_payload, "signed_string" => $signed_string ), Response::HTTP_FORBIDDEN);
+            return response( array( "status" => "failed", "message" => "Client verification error."), Response::HTTP_FORBIDDEN);
         }
         else return $next($request);
 
