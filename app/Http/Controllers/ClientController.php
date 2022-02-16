@@ -23,15 +23,15 @@ class ClientController extends Controller
         $attributes = ['email' => $request->email, 'password' => $request->password];
         if(Auth::guard('client')->attempt($attributes)){
 
-            $refreshToken = Passport::refreshToken()->create($attributes);
-            dd($refreshToken);
+//            $refreshToken = Passport::refreshToken()->create($attributes);
+//            dd($refreshToken);
             $client = Auth::guard('client')->user();
             $token              =  $client->createToken('tangCLIToken')->accessToken;
             $result['client_id']  = $client->id;
             $result['success']  =  true;
             $result['message']  =  "Success! you are logged in successfully";
             $result['token']    =  $token;
-            $refreshToken = '' +  RefreshToken::create();
+//            $refreshToken = '' +  RefreshToken::create();
 
             return response()->json(['data' => $result], $this->successStatus);
 

@@ -13,6 +13,13 @@ return [
     ],
     'app' => [
         'client_secret' => env('APP_WEB_CLIENT_SECRET', 'APP_WEB_CLIENT_SECRET'),
+        'init_users' => env('APP_USERS_ARRAY', '[]'),
+    ],
+    'clients' => [
+        'web_password' => env('APP_WEB_CLIENT_PASSWORD', 'APP_WEB_CLIENT_PASSWORD'),
+        'web_username' => env('APP_WEB_CLIENT_USERNAME', 'APP_WEB_CLIENT_USERNAME'),
+        'web_email' => env('APP_WEB_CLIENT_EMAIL', 'APP_WEB_CLIENT_EMAIL'),
+        'web_name' => env('APP_WEB_CLIENT_NAME', 'APP_WEB_CLIENT_NAME'),
     ],
 
     'service_status' => [

@@ -11,7 +11,6 @@ if (!function_exists('make_baxi_url')) {
         $contains = Str::contains($url, ['/api/baxipay']);
         if ($contains) {
             $url = ltrim( $url, "/api/baxipay");
-//            dd($url, Config::get('constants.baxi.api_url') . $url);
             return Config::get('constants.baxi.api_url') .'/'. $url;
         }
         return Config::get('constants.baxi.api_url') . $url;
@@ -74,7 +73,7 @@ if (!function_exists('process_hmac_auth')) {
 //        $request_auth = $request->header('Authorization');
 //        SPLIT IN TO TWO USING :  and get the second item after username
         $request_date = $request->header('X-DATE-TIME');
-        $user_secret = Config::get('constants.app.client_secret'); //'secret'; // Take out to .env variables
+        $user_secret = Config::get('constants.app.client_secret'); // Take out to .env variables
         $timestamp = strtotime($request_date);
 
         if (!empty($json_payload)) {

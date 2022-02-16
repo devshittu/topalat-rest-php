@@ -14,7 +14,7 @@ Run your migrations as:
 > tangsail artisan passport:install \
 > tangsail artisan config:cache
 > 
-> tangsail artisan migrate:refresh --seed && tangsail artisan passport:install &&  tangsail artisan passport:client --password --provider clients  && tangsail artisan config:cache && tangsail artisan route:list && tangsail artisan route:cache
+>  tangsail artisan config:cache && tangsail artisan route:list && tangsail artisan route:cache && tangsail artisan migrate:refresh --seed && tangsail artisan passport:install &&  tangsail artisan passport:client --password --provider clients
 
 All in one line
 

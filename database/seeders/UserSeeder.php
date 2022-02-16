@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -16,6 +17,11 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        $arrayString = Config::get('constants.app.init_users');
+        $myArray = [];
+        eval("\$myArray = $arrayString;");
+        DB::table('users')->insert($myArray);
+        /*
         DB::table('users')->insert([
                 [
                     'username' => 'devshittu',
@@ -40,6 +46,6 @@ class UserSeeder extends Seeder
                     'created_at' => now()->timestamp,
                 ],
             ]
-        );
+        );*/
     }
 }

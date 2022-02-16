@@ -40,10 +40,10 @@ class OrderController extends Controller
         $getCurrentTimeRFC = date(DateTime::RFC2822);
 //        $getCurrentTimeRFC = "Thu, 27 Jan 2022 14:21:25 +0100";
         $getCurrentTimeRFC = "Fri, 28 Jan 2022 00:37:09 +0100";
-        var_dump($getCurrentTimeRFC);
+//        var_dump($getCurrentTimeRFC);
         $toutc = strtotime($getCurrentTimeRFC);
         $reversedDate = date(DATE_RFC2822,$toutc);
-        dd($getCurrentTimeRFC, $toutc, $reversedDate);
+//        dd($getCurrentTimeRFC, $toutc, $reversedDate);
         $request_type = "GET";
         $endpoint = "/api/baxipay/superagent/account/balance";
         $json_payload = '';
