@@ -8,14 +8,17 @@ Please perform a clean with:
 > tangsail  artisan optimize \
 
 Run your migrations as:
+> tangsail down --rmi all -v
 
 > tangsail artisan migrate:refresh --seed \
 > tangsail artisan migrate:reset \
 > tangsail artisan passport:install \
 > tangsail artisan config:cache
 > 
->  tangsail artisan config:cache && tangsail artisan route:list && tangsail artisan route:cache && tangsail artisan migrate:refresh --seed && tangsail artisan passport:install &&  tangsail artisan passport:client --password --provider clients
->  php artisan config:clear && php artisan config:cache && php artisan route:list && php artisan route:cache && php artisan migrate:refresh --seed && php artisan passport:install
+> tangsail artisan config:cache && tangsail artisan route:list && tangsail artisan route:cache && tangsail artisan migrate:refresh --seed && tangsail artisan passport:install &&  tangsail artisan passport:client --password --provider clients
+> php artisan config:clear && php artisan config:cache && php artisan route:list && php artisan route:cache && php artisan migrate:refresh --seed && php artisan passport:install
+> php artisan migrate:refresh --seed && php artisan passport:install
+ 
 
 In production use
 >  php artisan config:cache && php artisan route:list && php artisan route:cache && php artisan migrate:refresh --seed && php artisan passport:install &&  php artisan passport:client --password --provider clients

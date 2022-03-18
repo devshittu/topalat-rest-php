@@ -20,4 +20,10 @@ class TransactionLog extends BaseModel
     private $username;
 //    protected $fillable = [‘email’, ‘reference’, ‘description’, 'payment_status', 'service_render_status', ];
     protected $guarded = ['service_request_payload_data'];
+
+
+    public function retries()
+    {
+        return $this->hasMany(TransactionRetryLog::class);
+    }
 }

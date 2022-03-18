@@ -58,8 +58,8 @@ Route::middleware([
 });
 
 Route::middleware([
-    'auth:clientapi',
-    'check_if_client'
+//    'auth:clientapi',
+//    'check_if_client'
 ])->prefix('services')->group(function () {
     Route::post('/transactionlogs/', [\App\Http\Controllers\TransactionLogController::class, 'store'])->name('createTransactionlog')//    ->middleware('auth.basic.once')
     ;
@@ -74,6 +74,9 @@ Route::middleware([
         $logs = \App\Models\TransactionLog::latest()->get();
         return \App\Http\Resources\TransactionLogResource::collection($logs);
     })->name('allTransactionlogs');
+
+    Route::get('/transactionlogs/{reference}/retries/', [\App\Http\Controllers\TransactionLogController::class, 'getTransactionRetries'])->name('allTransactionRetrylogs');
+
     Route::get('/transactionlogs/search/', function (Request $request) {
         $q = $request->get('q');
         // Variable to check
@@ -89,7 +92,6 @@ Route::middleware([
     //        echo("$ifEmail is not a valid email address");
             $search = \App\Models\TransactionLog::where('reference', 'LIKE', "%$q%")->get();
         }
-    //    $result = \App\Models\TransactionLog::all();
         $result = $search;
         return \App\Http\Resources\TransactionLogResource::collection($result);
     })->name('searchTransactionlogs');
@@ -146,6 +148,12 @@ Route::middleware([
 });
 
 Route::middleware([
+//    'auth:api,clientapi',
+//    'check_if_client'
+])->prefix('/billers')->group(function () {
+    Route::get('/list', [\App\Http\Controllers\BillerController::class, 'servicesList'])->name('listServices');
+});
+Route::middleware([
     'auth:api,clientapi',
     'check_if_client'
 ])->prefix('/buy')->group(function () {
@@ -153,6 +161,11 @@ Route::middleware([
     Route::post('/databundle', [\App\Http\Controllers\OrderController::class, 'databundle'])->name('buyData');
     Route::post('/cabletv', [\App\Http\Controllers\OrderController::class, 'cabletv'])->name('buyCabletv');
     Route::post('/electricity', [\App\Http\Controllers\OrderController::class, 'electricity'])->name('buyElectricity');
+
+    Route::post('/retry/airtime', [\App\Http\Controllers\OrderController::class, 'retryAirtime'])->name('retryBuyAirtime');
+    Route::post('/retry/databundle', [\App\Http\Controllers\OrderController::class, 'retryDatabundle'])->name('retryBuyData');
+    Route::post('/retry/cabletv', [\App\Http\Controllers\OrderController::class, 'retryCabletv'])->name('retryBuyCabletv');
+    Route::post('/retry/electricity', [\App\Http\Controllers\OrderController::class, 'retryElectricity'])->name('retryBuyElectricity');
 
 });
 

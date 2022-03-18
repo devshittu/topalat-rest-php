@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TransactionLog;
+use App\Models\TransactionRetryLog;
 use App\Traits\OrderLoggerTrait;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -15,9 +16,11 @@ class TransactionLogController extends Controller
 
 //    private $objLabel;
 
-    function __construct() {
+    function __construct()
+    {
         $this->objLabel = 'Transaction';
     }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -38,7 +41,7 @@ class TransactionLogController extends Controller
             'service_request_payload_data' => 'required|json',
         ]);
         // TODO
-        $reference  = $this->agentReference($request->service_category_raw);
+        $reference = $this->agentReference($request->service_category_raw);
 
         $newResObj = new TransactionLog();
 
@@ -108,7 +111,7 @@ class TransactionLogController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        if ($obj->update($request->all())){
+        if ($obj->update($request->all())) {
             return new \App\Http\Resources\TransactionLogResource($obj);
         } else {
             return response()->json([
@@ -157,5 +160,28 @@ class TransactionLogController extends Controller
                 'message' => '{$this->objLabel} can not be deleted'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $reference
+     * @return \Illuminate\Http\Response
+     */
+    public function getTransactionRetries($reference)
+    {
+        $transactionLog = TransactionLog::whereReference($reference)->firstOrFail();;
+        $retries = $transactionLog->retries;
+        // $logs = \App\Models\TransactionLog::latest()->get();
+        //return \App\Http\Resources\TransactionLogResource::collection($logs);
+        dd($retries);
+
+        $comment = TransactionRetryLog::find(1);
+
+
+        $post = $comment->post;
+
+
+        dd($post);
     }
 }

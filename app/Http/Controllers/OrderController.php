@@ -116,7 +116,7 @@ class OrderController extends Controller
                 $transactionObject = TransactionLog::whereReference($agentReference)->firstOrFail();
             } catch (ModelNotFoundException $ex) {
                 return response()->json([
-                    'success' => false,
+                    'status' => 'error',
                     'message' => "Transaction not found"
                 ], Response::HTTP_NOT_FOUND);
             }
@@ -197,7 +197,7 @@ class OrderController extends Controller
      * @param OrderRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function airtime(OrderRequest $request)
+    public function retryAirtime(OrderRequest $request)
     {
 
 
@@ -215,7 +215,7 @@ class OrderController extends Controller
      * @param OrderRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function databundle(OrderRequest $request)
+    public function retryDatabundle(OrderRequest $request)
     {
         $endpoint = '/api/baxipay/services/databundle/request';
         return $this->runOrder($request, $endpoint);
@@ -224,10 +224,10 @@ class OrderController extends Controller
     /**
      * Send a brand new cabletv order.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param OrderRequest $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\Response
      */
-    public function cabletv(Request $request)
+    public function retryCabletv(OrderRequest $request)
     {
         $endpoint = '/api/baxipay/services/multichoice/request';
         return $this->runOrder($request, $endpoint);
@@ -239,10 +239,129 @@ class OrderController extends Controller
      * @param \Illuminate\Http\OrderRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function electricity(OrderRequest $request)
+    public function retryElectricity(OrderRequest $request)
     {
         $endpoint = '/api/baxipay/services/electricity/request';
         return $this->runOrder($request, $endpoint);
+    }
+
+
+
+
+    /**
+     * Runs order processes.
+     *
+     * @param $request
+     * @param $endpoint
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function retryOrder($request, $endpoint=null)
+    {
+
+
+        // Check if the transaction log existed fine.
+        // validate input.
+        // collect and process each entry
+        // send the buying request if successful send
+
+        $request_body = $request->all();
+
+        $agentReference = $request_body['agentReference'];
+        $getTransactionLogByRef = $this->findTransactionLogByRef($agentReference);
+        if (!$getTransactionLogByRef) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => "Old transaction with ref: {$agentReference} not found"
+                ], Response::HTTP_NOT_FOUND);
+        } else {
+
+            try {
+                $transactionObject = TransactionLog::whereReference($agentReference)->firstOrFail();
+            } catch (ModelNotFoundException $ex) {}
+            // check payment successfully made.
+            if(!$transactionObject->payment_status) {
+
+                return response()->json([
+                    'status' => 'error',
+                    'message' => "{$this->objLabel} payment not completed/confirmed. Please reach us through our help lines. \n REF: $agentReference"
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            dd('$transactionObject', $transactionObject);
+            // TODO: create a new reference with transaction log append the transaction log reference with 'RE:'
+
+            $newReference  = $this->agentReference($request->service_category_raw);
+
+            $newResObj = new TransactionLog();
+
+            $newResObj->email = $request->email;
+            $newResObj->parent_reference = $agentReference;
+            $newResObj->reference = $newReference;
+            $newResObj->description = $request->description;
+            $newResObj->service_category_raw = $request->service_category_raw;
+            $newResObj->service_provider_raw = $request->service_provider_raw;
+            $newResObj->payment_status = Config::get('constants.service_status.COMPLETED');
+            $newResObj->service_render_status = Config::get('constants.service_status.PENDING');
+            $newResObj->service_request_payload_data = $request->service_request_payload_data;
+
+            if ($newResObj->save()) {
+                //send a mail from here;
+            }
+
+            // retrieve all fields from the transaction record (service_request_payload_data) and prepare to submit for buying to avoid middleman.
+            $serviceRequestPayloadData  = collect(json_decode($transactionObject->service_request_payload_data))->toArray();
+
+            // continue with the process of buying .
+            $serviceRequestPayloadData['agentReference'] = $newReference;
+            $serviceRequestPayloadData['reference'] = $newReference;
+            $serviceRequestPayloadData['agentId'] = Config::get('constants.baxi.agent_id');
+
+
+            $request_type = "POST";
+//            $endpoint = '/api/baxipay/services/airtime/request';
+            $json_payload = collect($serviceRequestPayloadData)->toJson();
+
+            $signature = calculate_digest($request_type, $endpoint, $json_payload);
+            $endpoint = make_baxi_url($endpoint);
+
+            $response = Http::withHeaders([
+                'X-API-KEY' => Config::get('constants.baxi.api_key'),
+//            'Authorization' => 'Baxi '. Config::get('constants.baxi.username') .':'. $signature ,
+                'Baxi-Date' => date(DATE_RFC1123),
+            ])
+                ->post($endpoint, $serviceRequestPayloadData);
+
+            if ($response->successful()) {
+                // save the request in the database and notify of the completed request.
+                // update payment column for payment and service updated successfully
+//
+                $updateTransactionPayloadData['service_render_status'] = Config::get('constants.service_status.COMPLETED');
+                $updateTransactionPayloadData['agentReference'] = $newReference;
+
+                // perform requery
+                $requery = $this->performRequery(['agentReference' => $newReference]);
+
+                if ($requery['status'] === "success")
+                {
+                    $this->updateTransactionLogByRef($updateTransactionPayloadData);
+                }
+                return response()->json(json_decode($response->body(), true), $response->status());
+            }
+            if ($response->failed()) {
+
+                // perform requery
+                $requery = $this->performRequery(['agentReference' => $newReference]);
+
+                if ($requery['status'] !== "success" || json_decode($response->body(), true)['code'] !== 'BX0023'){
+                    $request_body['service_render_status'] = Config::get('constants.service_status.FAILED');
+                }
+
+                return response()->json(json_decode($response->body(), true), $response->status());
+            }
+
+        }
+
+
     }
 
 
